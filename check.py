@@ -19,10 +19,19 @@ THEATER_URL = "https://www.cinemark.com/theatres/tx-dallas/cinemark-dallas-xd-an
 THEATER_PAGE_URL = "https://www.cinemark.com/theatres/tx-dallas/cinemark-dallas-xd-and-imax"
 MOVIE_ID = "104867"  # The Odyssey IMAX 70MM
 FORMAT_LABEL = "Imax 70mm"
-USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/126.0 Safari/537.36"
-)
+REQUEST_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.cinemark.com/movies/the-odyssey-imax-70mm",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "same-origin",
+    "Upgrade-Insecure-Requests": "1",
+}
 
 STATE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json")
 MAX_FORWARD_WALK_DAYS = 21
@@ -43,7 +52,7 @@ def fetch(date, attempts=3, timeout=30):
     last_err = None
     for i in range(attempts):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            req = urllib.request.Request(url, headers=REQUEST_HEADERS)
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 return resp.read().decode("utf-8", errors="replace")
         except (urllib.error.URLError, TimeoutError) as e:
